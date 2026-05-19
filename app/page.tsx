@@ -1,16 +1,10 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  Camera,
-  Heart,
-  MapPin,
-  MessageCircle,
-  Plane,
-  Sparkles,
-  Video,
-  Wifi,
+  Check,
 } from "lucide-react";
 
 const sectionFade = {
@@ -23,467 +17,727 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.16 } },
 };
 
-const featureList = [
-  "Roteiros inesperados",
-  "Cenas que te colocam no filme",
-  "Um outro Rio para viver",
-];
-
-const experiences = [
+const mainExperiences = [
   {
-    title: "Ilhas Tijucas",
-    description: "Águas cristalinas, praias desertas e o melhor visual do litoral carioca em um só passeio.",
+    title: "Sea Escape",
+    label: "Day Escape",
+    description: "Um dia leve e exclusivo explorando o Rio pelo mar.",
+    idealPeople: "2 a 8 pessoas",
+    price: "A partir de R$ 3.490",
+    highlights: [
+      "Lancha privativa",
+      "Roteiro panorâmico",
+      "Paradas para mergulho",
+      "Caixa de som",
+      "Água + gelo",
+    ],
+    asset: "/assets/snorkel.jpg",
+  },
+  {
+    title: "Golden Hour",
+    label: "Sunset Experience",
+    description: "O pôr do sol mais bonito do Rio visto do mar.",
+    idealPeople: "2 a 6 pessoas",
+    price: "A partir de R$ 3.990",
+    highlights: [
+      "Sunset route",
+      "Parada estratégica",
+      "Espumante",
+      "Fotos mobile",
+      "Experiência romântica",
+    ],
     asset: "/assets/tijucas.jpg",
   },
   {
-    title: "Ilha da Gigoia",
-    description: "Almoço de pé na areia, vibe paradisíaca e um outro Rio para descobrir a partir da água.",
-    asset: "/assets/gigoia.jpg",
+    title: "Club",
+    label: "Group Experience",
+    description: "Experiência ideal para grupos e comemorações.",
+    idealPeople: "8 a 15 pessoas",
+    price: "A partir de R$ 4.990",
+    highlights: [
+      "Lancha premium",
+      "Caixa de som",
+      "Cooler",
+      "Roteiro personalizado",
+      "Sunset stop",
+    ],
+    asset: "/assets/tijucas.jpg",
   },
   {
-    title: "Jet Ski Premium",
-    description: "Adrenalina, velocidade e saltos sobre as ondas com trilha de drone que registra cada momento.",
+    title: "Horizon",
+    label: "Couple Experience",
+    description: "Uma experiência exclusiva criada para casais.",
+    idealPeople: "2 pessoas",
+    price: "A partir de R$ 4.590",
+    highlights: [
+      "Passeio privativo",
+      "Espumante",
+      "Sunset experience",
+      "Decoração simples",
+      "Fotos mobile",
+    ],
+    asset: "/assets/gigoia.jpg",
+  },
+];
+
+const serviceExperiences = [
+  {
+    title: "Jet Ski Experience",
+    description: "Acelere pelo mar com opções flexíveis para cada momento.",
+    idealPeople: "1 ou 2 pessoas por jet",
+    price: "A partir de R$ 150",
+    options: [
+      { label: "Quick Ride", detail: "10 min — R$150" },
+      { label: "Explorer", detail: "15 min — R$250" },
+      { label: "Adventure Ride", detail: "30 min — R$450" },
+      { label: "Full Experience", detail: "1h — R$900" },
+    ],
+    inclusions: [
+      "Instrutor",
+      "Equipamentos",
+      "Rotas panorâmicas",
+      "Paradas estratégicas",
+    ],
     asset: "/assets/jetski-tour.jpg",
   },
   {
-    title: "Snorkel",
-    description: "Explore piscinas naturais entre peixes coloridos. Equipamento incluso e suporte total.",
+    title: "Wake Experience",
+    description: "1h de wake em clima premium, com apoio dedicado e prática assistida.",
+    idealPeople: "1 a 4 pessoas",
+    price: "1h — R$ 900",
+    inclusions: ["Instrutor", "Equipamento", "Prática assistida"],
+    asset: "/assets/gigoia.jpg",
+  },
+  {
+    title: "Helicopter Experience",
+    description: "Veja o Rio de um ângulo inesquecível.",
+    idealPeople: "A partir de R$ 950 por pessoa",
+    price: "A partir de R$ 950",
+    inclusions: ["Vídeo cinematic", "Drone", "Pedido especial"],
+    asset: "/assets/tijucas.jpg",
+  },
+];
+
+const specialExperiences = [
+  {
+    title: "Birthday Experience",
+    label: "Special Moments",
+    description: "Celebre com amigos em uma lancha privativa e atmosfera leve.",
+    idealPeople: "6 a 12 pessoas",
+    price: "A partir de R$ 5.490",
+    highlights: [
+      "Lancha privativa",
+      "Decoração simples",
+      "Espumante",
+      "Playlist personalizada",
+    ],
     asset: "/assets/snorkel.jpg",
   },
-];
-
-const videoShowcase = [
   {
-    title: "Passeio Vista",
-    description: "Uma visão aérea do Rio, navegando entre ilhas, praias e cartões-postais.",
-    src: "/assets/passeio-vista.mp4",
-    poster: "/assets/tijucas.jpg",
+    title: "Proposal Experience",
+    label: "Special Moments",
+    description: "Um pedido memorável com sunset exclusivo e suporte dedicado.",
+    idealPeople: "2 pessoas",
+    price: "A partir de R$ 6.990",
+    highlights: [
+      "Sunset exclusivo",
+      "Decoração premium",
+      "Espumante",
+      "Suporte personalizado",
+    ],
+    asset: "/assets/tijucas.jpg",
   },
   {
-    title: "Drone Vista",
-    description: "O olhar do drone sobre o seu dia, capturando movimento, cores e emoção.",
-    src: "/assets/drone-vista.mp4",
-    poster: "/assets/gigoia.jpg",
-  },
-];
-
-const celebrationTypes = [
-  {
-    label: "Pedido de casamento",
-    title: "Um cenário feito para o sim.",
-    description: "Do primeiro olhar ao brinde final, cada detalhe é pensado para ser uma lembrança inesquecível.",
-    icon: Heart,
-  },
-  {
-    label: "Aniversário",
-    title: "Celebre no mar com quem importa.",
-    description: "Datas especiais ganham trilha sonora, decoração e um clima leve para amigos e família.",
-    icon: Sparkles,
-  },
-  {
-    label: "Encontro de amigos",
-    title: "Uma festa pronta para acontecer.",
-    description: "Cuidamos da experiência completa para que você só precise chegar, brindar e viver.",
-    icon: MessageCircle,
+    title: "Honeymoon Experience",
+    label: "Special Moments",
+    description: "Um roteiro íntimo e privativo para momentos a dois.",
+    idealPeople: "2 pessoas",
+    price: "A partir de R$ 5.990",
+    highlights: [
+      "Passeio privativo",
+      "Sunset",
+      "Espumante",
+      "Roteiro exclusivo",
+    ],
+    asset: "/assets/gigoia.jpg",
   },
 ];
 
-const journeySteps = [
-  {
-    title: "Design do seu dia",
-    description: "Consultoria rápida para entender como você quer viver o Rio e transformar isso em um roteiro único.",
-    icon: Plane,
-  },
-  {
-    title: "A Experiência",
-    description: "Embarque VIP, briefing leve e um dia pensado para diversão, descoberta e conexão com a cidade.",
-    icon: Wifi,
-  },
-  {
-    title: "A Captação",
-    description: "Drones e câmeras acompanham cada curva, salto e sorriso para criar seu filme exclusivo.",
-    icon: Camera,
-  },
-  {
-    title: "Sua Estreia",
-    description: "Você recebe o material editado com cor e trilha sonora, pronto para reviver e compartilhar.",
-    icon: Sparkles,
-  },
+const personalizeOptions = [
+  "Sea Escape",
+  "Golden Hour",
+  "Club",
+  "Horizon",
+  "Jet Ski",
+  "Wake",
+  "Helicopter",
 ];
 
-function FeatureChip({ label }: { label: string }) {
+const extrasOptions = [
+  "Drone cinematic",
+  "Fotógrafo",
+  "Espumante premium",
+  "Transfer",
+  "Tábua gourmet",
+  "Decoração",
+  "DJ",
+  "Flores",
+  "Vídeo reels",
+  "Playlist personalizada",
+];
+
+const vibeOptions = ["Relax", "Sunset", "Adventure", "Romantic", "Celebration", "Creator"];
+
+const touristCards = [
+  { title: "English Support", description: "Atendimento em inglês e fluência local." },
+  { title: "Easy Booking", description: "Reserva ágil para seu roteiro no Rio." },
+  { title: "Personalized Experiences", description: "Experiências pensadas para seu grupo." },
+  { title: "Safe Experience", description: "Operação com foco em segurança e conforto." },
+];
+
+const differentials = [
+  { title: "Atendimento humanizado", description: "Fale com a gente sempre que precisar." },
+  { title: "Roteiros personalizados", description: "Cada experiência é criada do seu jeito." },
+  { title: "Pagamento seguro", description: "Processo simples e confiável." },
+  { title: "Suporte completo", description: "Antes, durante e depois da experiência." },
+];
+
+function StepBadge({ number, label }: { number: number; label: string }) {
   return (
-    <div className="rounded-full border border-[#C1A68D]/30 bg-white/70 px-4 py-2 text-sm font-medium text-[#001a33] shadow-sm shadow-[#001a33]/5 backdrop-blur-sm">
-      {label}
+    <div className="rounded-3xl border border-white/10 bg-slate-950/70 px-4 py-4 text-sm text-slate-300">
+      <span className="block font-semibold text-white">Passo {number}</span>
+      <span>{label}</span>
     </div>
   );
 }
 
-function ExperienceCard({ title, description, asset, className = "" }: { title: string; description: string; asset: string; className?: string }) {
+function ExperienceCard({ title, label, description, price, highlights, asset, idealPeople }: { title: string; label: string; description: string; price: string; highlights: string[]; asset: string; idealPeople?: string }) {
   return (
     <motion.article
       whileHover={{ y: -8 }}
       transition={{ duration: 0.4 }}
-      className={`group relative overflow-hidden rounded-[2rem] text-white shadow-[0_30px_80px_rgba(0,26,51,0.12)] ${className}`}
+      className="group overflow-hidden rounded-4xl border border-white/10 bg-slate-950/80 shadow-[0_40px_80px_rgba(0,17,51,0.22)] transition hover:-translate-y-1"
     >
-      <img
-        src={asset}
-        alt={title}
-        className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
-      />
-      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/90 to-transparent" />
-      <div className="relative z-10 flex min-h-[420px] flex-col justify-end p-8">
-        <div className="rounded-[1.75rem] bg-black/55 p-6 backdrop-blur-sm">
-          <span className="text-xs uppercase tracking-[0.35em] text-[#F5F5EE]">Experiência</span>
-          <h3 className="mt-4 text-3xl font-[350] leading-tight tracking-tight text-white">{title}</h3>
-          <p className="mt-4 max-w-md text-sm leading-7 text-white/85">{description}</p>
-          <a
-            href="#contact"
-            className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#F5F5EE] transition duration-300 group-hover:text-white"
-          >
-            Descobrir experiência
-            <ArrowRight className="h-4 w-4" />
-          </a>
+      <div className="relative aspect-4/3 overflow-hidden">
+        <img src={asset} alt={title} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent" />
+      </div>
+      <div className="space-y-4 p-6 text-slate-100">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-sm uppercase tracking-[0.35em] text-[#82C7FF]">{label}</p>
+            <h3 className="mt-3 text-2xl font-semibold text-white">{title}</h3>
+          </div>
+          <span className="text-sm font-semibold text-[#82C7FF]">{price}</span>
+        </div>
+        {idealPeople ? (
+          <p className="text-sm text-slate-400">
+            Ideal para: <span className="text-white">{idealPeople}</span>
+          </p>
+        ) : null}
+        <p className="text-sm leading-7 text-slate-300">{description}</p>
+        <ul className="space-y-2 text-sm text-slate-300">
+          {highlights.map((item) => (
+            <li key={item} className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-[#82C7FF]" />
+              {item}
+            </li>
+          ))}
+        </ul>
+        <a href="#monte" className="inline-flex items-center gap-2 text-sm font-semibold text-[#82C7FF] transition hover:text-[#A2D4FF]">
+          Reservar agora
+          <ArrowRight className="h-4 w-4" />
+        </a>
+      </div>
+    </motion.article>
+  );
+}
+
+function ServiceCard({
+  title,
+  description,
+  price,
+  idealPeople,
+  options,
+  inclusions,
+  asset,
+}: {
+  title: string;
+  description: string;
+  price: string;
+  idealPeople: string;
+  options?: { label: string; detail: string }[];
+  inclusions: string[];
+  asset: string;
+}) {
+  return (
+    <motion.article
+      whileHover={{ y: -6 }}
+      transition={{ duration: 0.35 }}
+      className="overflow-hidden rounded-4xl border border-white/10 bg-slate-950/80 shadow-[0_30px_60px_rgba(0,17,51,0.18)]"
+    >
+      <div className="relative aspect-[16/10] overflow-hidden">
+        <img src={asset} alt={title} className="h-full w-full object-cover transition duration-700 hover:scale-105" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent" />
+      </div>
+      <div className="space-y-4 p-8 text-slate-100">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-sm uppercase tracking-[0.35em] text-[#82C7FF]">Serviço adicional</p>
+            <h3 className="mt-3 text-2xl font-semibold text-white">{title}</h3>
+          </div>
+          <span className="text-sm font-semibold text-[#82C7FF]">{price}</span>
+        </div>
+        <p className="text-sm leading-7 text-slate-300">{description}</p>
+        <p className="text-sm text-slate-400">
+          Ideal para: <span className="text-white">{idealPeople}</span>
+        </p>
+        {options ? (
+          <div className="rounded-3xl border border-white/10 bg-[#0b1327] p-4">
+            <p className="text-sm uppercase tracking-[0.3em] text-[#82C7FF]">Opções</p>
+            <div className="mt-3 space-y-2 text-sm text-slate-300">
+              {options.map((item) => (
+                <div key={item.label} className="flex items-center justify-between gap-4">
+                  <span>{item.label}</span>
+                  <span className="font-semibold text-white">{item.detail}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+        <div className="space-y-3 text-sm text-slate-300">
+          <p className="uppercase tracking-[0.3em] text-[#82C7FF]">Incluso</p>
+          <ul className="space-y-2">
+            {inclusions.map((item) => (
+              <li key={item} className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-[#82C7FF]" />
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </motion.article>
   );
 }
 
-function CelebrationCard({ label, title, description, Icon }: { label: string; title: string; description: string; Icon: typeof Heart }) {
+function FooterLink({ label }: { label: string }) {
   return (
-    <motion.div variants={sectionFade} className="group rounded-[2rem] border border-[#001a33]/10 bg-white/95 p-8 shadow-[0_30px_80px_rgba(0,26,51,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_35px_90px_rgba(0,26,51,0.12)]">
-      <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-[#001a33]/5 text-[#001a33]">
-        <Icon className="h-5 w-5" />
-      </div>
-      <span className="text-xs uppercase tracking-[0.35em] text-[#C1A68D]">{label}</span>
-      <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#001a33]">{title}</h3>
-      <p className="mt-4 text-sm leading-7 text-[#001a33]/75">{description}</p>
-    </motion.div>
+    <a href={`#${label.toLowerCase()}`} className="transition hover:text-[#147BFF] text-sm text-[#6B7280]">
+      {label}
+    </a>
   );
 }
 
-function JourneyStep({ title, description, Icon, index }: { title: string; description: string; Icon: typeof Plane; index: number }) {
+function PersonalizeForm() {
+  const [selectedExperience, setSelectedExperience] = useState(personalizeOptions[0]);
+  const [people, setPeople] = useState(4);
+  const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
+  const [selectedVibe, setSelectedVibe] = useState(vibeOptions[0]);
+  const [date, setDate] = useState("");
+
+  const whatsappMessage = useMemo(() => {
+    const extrasText = selectedExtras.length ? selectedExtras.join(", ") : "Nenhum extra selecionado";
+    return `Olá! Gostaria de montar uma experiência personalizada com a A7Rio.%0A%0AExperiência: ${selectedExperience}%0APessoas: ${people}%0AExtras: ${extrasText}%0AVibe: ${selectedVibe}%0AData: ${date || "Ainda não definida"}`;
+  }, [date, people, selectedExperience, selectedExtras, selectedVibe]);
+
+  const whatsappUrl = `https://wa.me/5521999999999?text=${whatsappMessage}`;
+
   return (
-    <motion.div variants={sectionFade} className="relative pl-14">
-      <span className="pointer-events-none absolute left-0 top-1 text-4xl font-[300] tracking-tight text-[#001a33]/15">
-        0{index + 1}
-      </span>
-      <div className="flex items-start gap-4">
-        <div className="mt-1 inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-[#001a33]/5 text-[#001a33]">
-          <Icon className="h-5 w-5" />
-        </div>
-        <div>
-          <h4 className="text-xl font-semibold tracking-tight text-[#001a33]">{title}</h4>
-          <p className="mt-2 max-w-xl text-sm leading-7 text-[#001a33]/75">{description}</p>
+    <div className="space-y-6 rounded-4xl border border-white/10 bg-slate-950/80 p-6 shadow-[0_30px_70px_rgba(0,17,51,0.18)] backdrop-blur-xl md:p-10">
+      <div className="space-y-3">
+        <p className="text-sm uppercase tracking-[0.35em] text-[#82C7FF]">Step 1 — Escolha a experiência</p>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {personalizeOptions.map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => setSelectedExperience(option)}
+              className={`rounded-3xl border px-4 py-3 text-left text-sm transition ${
+                selectedExperience === option
+                  ? "border-[#147BFF] bg-[#82C7FF]/20 text-white"
+                  : "border-white/10 bg-slate-950/80 text-slate-200"
+              }`}
+            >
+              {option}
+            </button>
+          ))}
         </div>
       </div>
-    </motion.div>
+
+      <div className="space-y-3">
+        <p className="text-sm uppercase tracking-[0.35em] text-[#82C7FF]">Step 2 — Quantas pessoas?</p>
+        <input
+          type="number"
+          min={1}
+          value={people}
+          onChange={(event) => setPeople(Number(event.target.value))}
+          className="w-full rounded-3xl border border-white/10 bg-slate-950/80 px-5 py-4 text-sm text-slate-100 outline-none transition focus:border-[#147BFF]"
+        />
+      </div>
+
+      <div className="space-y-3">
+        <p className="text-sm uppercase tracking-[0.35em] text-[#82C7FF]">Step 3 — Extras</p>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {extrasOptions.map((extra) => {
+            const selected = selectedExtras.includes(extra);
+            return (
+              <button
+                key={extra}
+                type="button"
+                onClick={() => {
+                  setSelectedExtras((current) =>
+                    current.includes(extra) ? current.filter((item) => item !== extra) : [...current, extra],
+                  );
+                }}
+                className={`rounded-3xl border px-4 py-4 text-left text-sm transition ${
+                  selected ? "border-[#147BFF] bg-[#82C7FF]/20 text-white" : "border-white/10 bg-slate-950/80 text-slate-200"
+                }`}
+              >
+                {extra}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <p className="text-sm uppercase tracking-[0.35em] text-[#82C7FF]">Step 4 — Qual vibe?</p>
+        <div className="flex flex-wrap gap-3">
+          {vibeOptions.map((vibe) => (
+            <button
+              key={vibe}
+              type="button"
+              onClick={() => setSelectedVibe(vibe)}
+              className={`rounded-full border px-5 py-3 text-sm transition ${
+                selectedVibe === vibe
+                  ? "border-[#147BFF] bg-[#82C7FF]/20 text-white"
+                  : "border-white/10 bg-slate-950/80 text-slate-200"
+              }`}
+            >
+              {vibe}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <p className="text-sm uppercase tracking-[0.35em] text-[#82C7FF]">Step 5 — Data desejada</p>
+        <input
+          type="date"
+          value={date}
+          onChange={(event) => setDate(event.target.value)}
+          className="w-full rounded-3xl border border-white/10 bg-slate-950/80 px-5 py-4 text-sm text-slate-100 outline-none transition focus:border-[#147BFF]"
+        />
+      </div>
+
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex w-full items-center justify-center rounded-full bg-[#147BFF] px-6 py-4 text-sm font-semibold text-white transition hover:bg-[#49A3FF]"
+      >
+        Montar minha experiência
+      </a>
+    </div>
   );
 }
 
 export default function Home() {
   return (
-    <div className="scroll-smooth bg-[#F5F5F0] font-sans text-[#001a33] antialiased">
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/60 bg-[#F5F5F0]/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 md:px-10">
-          <div className="text-lg font-semibold tracking-[0.35em] uppercase text-[#001a33]">A7tour</div>
+    <div className="scroll-smooth bg-[#081120] font-sans text-[#F8FAFC] antialiased">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#081120]/95 backdrop-blur-xl text-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-10">
+          <div className="flex items-center gap-3 rounded-full bg-[#081120] px-2 py-1">
+            <img src="/assets/logo-azul.png" alt="A7Rio" className="h-20 w-auto mix-blend-screen" />
+          </div>
+          <nav className="hidden items-center gap-8 text-sm font-medium text-slate-200/80 md:flex">
+            <a href="#experiencias" className="transition hover:text-[#82C7FF]">Experiências</a>
+            <a href="#servicos" className="transition hover:text-[#82C7FF]">Serviços</a>
+            <a href="#special" className="transition hover:text-[#82C7FF]">Special Moments</a>
+            <a href="#extras" className="transition hover:text-[#82C7FF]">Extras</a>
+            <a href="#monte" className="transition hover:text-[#82C7FF]">Monte</a>
+          </nav>
           <a
-            href="#contact"
-            className="hidden rounded-full border border-[#001a33]/15 bg-white/75 px-5 py-3 text-sm font-medium transition hover:border-[#001a33]/30 hover:bg-white md:inline-flex"
+            href="https://wa.me/5521999999999?text=Olá!%20Gostaria%20de%20montar%20uma%20experiência%20personalizada%20com%20a%20A7Rio."
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center rounded-full bg-[#147BFF] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#49A3FF]"
           >
-            Contato
+            WhatsApp
           </a>
         </div>
       </header>
 
-      <main className="relative overflow-hidden">
-        <section className="relative min-h-screen overflow-hidden">
-          <video
-            className="absolute inset-0 h-full w-full object-cover object-center"
-            src="/assets/hero-video.mp4"
-            poster="/assets/A7Tour.svg"
-            preload="metadata"
-            autoPlay
-            muted
-            loop
-            playsInline
-            style={{ objectPosition: "center 35%" }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#001a33]/45 via-[#001a33]/25 to-transparent" />
-          <div className="absolute inset-x-0 top-0 h-28 bg-[linear-gradient(180deg,rgba(245,245,240,0.95),transparent)]" />
-          <div className="relative mx-auto flex min-h-[100vh] max-w-7xl items-center justify-center px-6 py-24 md:px-10">
+      <main className="relative overflow-hidden pt-24">
+        <section className="relative min-h-[85vh] overflow-hidden">
+          <div className="absolute inset-0">
+            <video
+              className="h-full w-full object-cover brightness-75 contrast-110 saturate-110"
+              src="/assets/hero-video.mp4"
+              poster="/assets/tijucas.jpg"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+            />
+            <div className="absolute inset-0 bg-[#050816]/85" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(20,123,255,0.18),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(57,120,255,0.18),_transparent_30%)]" />
+          </div>
+          <div className="relative mx-auto flex min-h-[85vh] max-w-7xl flex-col justify-center px-6 py-20 md:px-10">
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-              className="relative z-10 max-w-3xl text-center"
+              transition={{ duration: 0.9 }}
+              className="mx-auto flex w-full max-w-3xl flex-col items-start gap-8 rounded-4xl border border-white/10 bg-slate-950/70 px-6 py-10 shadow-[0_40px_120px_rgba(0,0,0,0.25)] backdrop-blur-xl sm:px-10"
             >
-              <p className="mb-6 inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-2 text-xs uppercase tracking-[0.35em] text-white/85 backdrop-blur-sm">
-                Uma experiência carioca que parece um filme
-              </p>
-              <h1 className="mt-8 text-5xl font-[300] leading-[1.02] tracking-tight text-white sm:text-6xl lg:text-7xl">
-                O Rio de Janeiro como sua própria cena de cinema.
-              </h1>
-              <p className="mx-auto mt-8 max-w-2xl text-base leading-8 text-white/85 sm:text-lg">
-                Jet Ski, lanchas e helicópteros. Viva um dia diferente, conhecendo um Rio que só quem está junto com a gente percebe.
-              </p>
-              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <div className="space-y-5 text-slate-100">
+                <p className="text-sm uppercase tracking-[0.4em] text-[#82C7FF]">A7Rio</p>
+                <h1 className="text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl">
+                  Viva o Rio e colecione momentos exclusivos.
+                </h1>
+                <p className="max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+                  Momentos exclusivos no mar, para quem busca uma experiência memorável.
+                </p>
+              </div>
+              <div className="flex flex-col gap-4 sm:flex-row">
                 <a
-                  href="#contact"
-                  className="inline-flex items-center justify-center rounded-full bg-[#001a33] px-8 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-white transition duration-300 ease-out transform-gpu hover:scale-105 hover:bg-[#003050]"
+                  href="#experiencias"
+                  className="inline-flex items-center justify-center rounded-full bg-[#147BFF] px-8 py-4 text-sm font-semibold text-white transition hover:bg-[#49A3FF]"
                 >
-                  Começar minha jornada
+                  Ver experiências
                 </a>
                 <a
-                  href="https://wa.me/5521999999999?text=Quero%20uma%20experi%C3%AAncia%20A7Tour"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-8 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-white transition duration-300 ease-out transform-gpu hover:scale-105 hover:bg-white/15"
+                  href="#monte"
+                  className="inline-flex items-center justify-center rounded-full border border-[#147BFF] bg-slate-950/80 px-8 py-4 text-sm font-semibold text-white transition hover:border-[#49A3FF] hover:text-[#A2D4FF]"
                 >
-                  Falar via WhatsApp
+                  Montar meu roteiro
                 </a>
+              </div>
+              <div className="grid grid-cols-2 gap-3 border-t border-white/10 pt-6 text-sm text-slate-300 sm:grid-cols-4">
+                {['Lifestyle premium', 'Cinematic service', 'Experiências exclusivas', 'Reserva fácil'].map((item) => (
+                  <span key={item} className="inline-flex items-center gap-2 font-medium text-slate-200/80">
+                    <Check className="h-4 w-4 text-[#82C7FF]" />
+                    {item}
+                  </span>
+                ))}
               </div>
             </motion.div>
           </div>
         </section>
 
-        <section className="relative mx-auto max-w-7xl px-6 py-20 md:px-10">
+        <section id="experiencias" className="mx-auto max-w-7xl px-6 py-20 md:px-10">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={stagger}
+            className="space-y-8"
+          >
+            <motion.div variants={sectionFade} className="space-y-4 text-center">
+              <p className="text-sm uppercase tracking-[0.4em] text-[#147BFF]">Experiências principais</p>
+              <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                Sensações no mar do Rio.
+              </h2>
+              <p className="mx-auto max-w-2xl text-base leading-8 text-slate-300">
+                Quatro experiências pensadas para viver o Rio como um momento exclusivo.
+              </p>
+            </motion.div>
+            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+              {mainExperiences.map((experience) => (
+                <ExperienceCard key={experience.title} {...experience} />
+              ))}
+            </div>
+          </motion.div>
+        </section>
+
+        <section id="servicos" className="bg-[#081120] py-20">
+          <div className="mx-auto max-w-7xl px-6 md:px-10">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={sectionFade}
+              className="space-y-4 text-center"
+            >
+              <p className="text-sm uppercase tracking-[0.4em] text-[#147BFF]">Serviços adicionais</p>
+              <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                Experiências específicas sem ruído.
+              </h2>
+              <p className="mx-auto max-w-2xl text-base leading-8 text-slate-300">
+                Opções premium para quem busca velocidade, adrenalina ou vistas diferentes.
+              </p>
+            </motion.div>
+            <div className="mt-10 grid gap-6 lg:grid-cols-3">
+              {serviceExperiences.map((service) => (
+                <ServiceCard key={service.title} {...service} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="special" className="mx-auto max-w-7xl px-6 py-20 md:px-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={sectionFade}
+            className="space-y-4 text-center"
+          >
+            <p className="text-sm uppercase tracking-[0.4em] text-[#147BFF]">Special Moments</p>
+            <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Experiências criadas para momentos únicos.
+            </h2>
+            <p className="mx-auto max-w-2xl text-base leading-8 text-slate-300">
+              Celebrações, pedidos e roteiros íntimos para viver o Rio de forma especial.
+            </p>
+          </motion.div>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {specialExperiences.map((experience) => (
+              <ExperienceCard key={experience.title} {...experience} />
+            ))}
+          </div>
+        </section>
+
+        <section id="extras" className="bg-[#081120] py-20">
+          <div className="mx-auto max-w-7xl px-6 md:px-10">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={sectionFade}
+              className="space-y-4 text-center"
+            >
+              <p className="text-sm uppercase tracking-[0.4em] text-[#147BFF]">Add-ons</p>
+              <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                Personalize qualquer experiência.
+              </h2>
+              <p className="mx-auto max-w-2xl text-base leading-8 text-slate-300">
+                Extras selecionados para deixar a sua viagem no mar ainda mais memorável.
+              </p>
+            </motion.div>
+            <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {extrasOptions.map((extra) => (
+                <div key={extra} className="rounded-3xl border border-white/10 bg-slate-950/80 px-5 py-4 text-sm text-slate-200 shadow-[0_20px_40px_rgba(0,17,51,0.15)]">
+                  {extra}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="monte" className="mx-auto max-w-7xl px-6 py-20 md:px-10">
+          <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={sectionFade}
+              className="space-y-6"
+            >
+              <p className="text-sm uppercase tracking-[0.35em] text-[#147BFF]">Monte seu roteiro</p>
+              <h2 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">Do seu jeito.</h2>
+              <p className="max-w-xl text-base leading-8 text-slate-300">
+                Adicione extras e transforme sua experiência em algo ainda mais especial.
+              </p>
+              <div className="grid gap-3">
+                <StepBadge number={1} label="Escolha a experiência" />
+                <StepBadge number={2} label="Quantas pessoas" />
+                <StepBadge number={3} label="Extras" />
+                <StepBadge number={4} label="Qual vibe" />
+                <StepBadge number={5} label="Data desejada" />
+                <StepBadge number={6} label="Montar minha experiência" />
+              </div>
+            </motion.div>
+            <PersonalizeForm />
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-7xl px-6 py-20 md:px-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={sectionFade}
             className="space-y-8 text-center"
           >
-            <motion.h2 variants={sectionFade} className="text-3xl font-[300] tracking-[-0.04em] sm:text-4xl">
-              Nós não fazemos passeios. Nós roteirizamos memórias.
-            </motion.h2>
-            <motion.p variants={sectionFade} className="mx-auto max-w-3xl text-base leading-8 text-[#001a33]/80 sm:text-lg">
-              Esqueça o turismo tradicional. Preparamos roteiros autênticos pelas águas e céus do Rio, onde você vive o roteiro, descobre um outro lado da cidade e recebe cada momento como se estivesse em cena.
-            </motion.p>
-            <motion.div variants={sectionFade} className="flex flex-wrap justify-center gap-4 pt-4">
-              {featureList.map((feature) => (
-                <FeatureChip key={feature} label={feature} />
-              ))}
-            </motion.div>
+            <p className="text-sm uppercase tracking-[0.35em] text-[#82C7FF]">Turistas internacionais</p>
+            <h2 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">Experiências com suporte discreto e fluente.</h2>
+            <p className="mx-auto max-w-2xl text-base leading-8 text-slate-300">
+              Um serviço pensado para visitantes que querem aproveitar o Rio com conforto, reserva ágil e apoio em inglês.
+            </p>
           </motion.div>
-        </section>
-
-        <section className="bg-white py-20">
-          <div className="mx-auto max-w-7xl px-6 md:px-10">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={stagger}
-              className="grid gap-6 lg:grid-cols-[1.4fr_1fr]"
-            >
-              <motion.div variants={sectionFade} className="grid gap-6">
-                <ExperienceCard {...experiences[0]} className="min-h-[620px]" />
-                <ExperienceCard {...experiences[1]} className="min-h-[420px]" />
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            {touristCards.map((card) => (
+              <motion.div key={card.title} variants={sectionFade} className="rounded-4xl border border-white/10 bg-slate-950/80 p-8 shadow-[0_20px_50px_rgba(0,17,51,0.16)]">
+                <h3 className="text-xl font-semibold text-white">{card.title}</h3>
+                <p className="mt-4 text-sm leading-7 text-slate-300">{card.description}</p>
               </motion.div>
-              <div className="grid gap-6">
-                <ExperienceCard {...experiences[2]} className="min-h-[420px]" />
-                <ExperienceCard {...experiences[3]} className="min-h-[420px]" />
-              </div>
-            </motion.div>
+            ))}
           </div>
         </section>
 
         <section className="mx-auto max-w-7xl px-6 py-20 md:px-10">
-          <div className="space-y-8">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={sectionFade}
-              className="space-y-10"
-            >
-              <p className="text-sm uppercase tracking-[0.35em] text-[#C1A68D]">Vídeos da experiência</p>
-              <h2 className="text-4xl font-[300] tracking-tight sm:text-5xl">
-                Veja como o Rio ganha vida no nosso olhar.
-              </h2>
-              <p className="max-w-2xl text-base leading-9 text-[#001a33]/80">
-                Dois cortes de vídeo que mostram o passeio de cima e o olhar do drone sobre o seu dia.
-              </p>
-            </motion.div>
-            <div className="grid gap-6 lg:grid-cols-2">
-              {videoShowcase.map((video) => (
-                <motion.div
-                  key={video.title}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, amount: 0.2 }}
-                  variants={sectionFade}
-                  className="group relative overflow-hidden rounded-[2rem] shadow-[0_30px_80px_rgba(0,26,51,0.08)]"
-                >
-                  <div className="aspect-video overflow-hidden bg-black">
-                    <video
-                      className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                      src={video.src}
-                      poster={video.poster}
-                      autoPlay
-                      controls
-                      muted
-                      loop
-                      playsInline
-                      preload="auto"
-                    />
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                  <div className="relative p-8">
-                    <p className="text-xs uppercase tracking-[0.35em] text-[#F5F5EE]">{video.title}</p>
-                    <p className="mt-3 max-w-sm text-xl font-semibold leading-tight text-white">{video.description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-7xl px-6 py-20 md:px-10">
-          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={sectionFade}
-              className="space-y-10"
-            >
-              <p className="text-sm uppercase tracking-[0.35em] text-[#C1A68D]">Momentos de celebração</p>
-              <h2 className="text-4xl font-[300] tracking-tight sm:text-5xl">
-                Quer comemorar algo especial? A gente cuida de tudo.
-              </h2>
-              <p className="max-w-xl text-base leading-9 text-[#001a33]/80">
-                Casamento, aniversário ou encontro com amigos: nossa equipe transforma a celebração em um dia memorável, com todo o suporte e captação profissional.
-              </p>
-            </motion.div>
-            <div className="grid gap-6">
-              {celebrationTypes.map((item) => (
-                <CelebrationCard
-                  key={item.label}
-                  label={item.label}
-                  title={item.title}
-                  description={item.description}
-                  Icon={item.icon}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-[#F5F5F0] py-20">
-          <div className="mx-auto max-w-7xl px-6 md:px-10">
-            <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-              <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-                variants={sectionFade}
-                className="space-y-6"
-              >
-                <p className="text-sm uppercase tracking-[0.35em] text-[#C1A68D]">A Jornada A7Tour</p>
-                <h2 className="text-4xl font-[300] tracking-tight sm:text-5xl">
-                  Um processo pensado para quem busca algo fora da curva.
-                </h2>
-              </motion.div>
-              <div className="relative pl-6">
-                <div className="absolute left-3 top-6 bottom-0 w-px bg-[#001a33]/10" />
-                <div className="space-y-10">
-                  {journeySteps.map((step, index) => (
-                    <JourneyStep
-                      key={step.title}
-                      index={index}
-                      title={step.title}
-                      description={step.description}
-                      Icon={step.icon}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="contact" className="mx-auto max-w-7xl px-6 py-24 md:px-10">
           <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8 }}
-            className="rounded-[2.5rem] border border-[#001a33]/10 bg-[#001a33]/5 p-10 shadow-[0_40px_120px_rgba(0,26,51,0.08)]"
+            variants={sectionFade}
+            className="space-y-8 text-center"
           >
-            <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-              <div className="space-y-6">
-                <p className="text-sm uppercase tracking-[0.35em] text-[#C1A68D]">Trust & Impacto</p>
-                <h2 className="text-4xl font-[300] tracking-[-0.04em] sm:text-5xl">
-                  A vida é muito curta para viver o comum.
-                </h2>
-                <p className="max-w-2xl text-base leading-8 text-[#001a33]/80">
-                  Transformamos cada hora no Rio em uma sequência vibrante, com roteiro autoral, captação profissional e momentos que você vai lembrar como dias de festa.
-                </p>
-              </div>
-              <div className="flex flex-col items-start gap-4">
-                <a
-                  href="https://wa.me/5521999999999?text=Quero%20planejar%20uma%20experi%C3%AAncia%20A7Tour"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex w-full items-center justify-center rounded-full bg-[#001a33] px-8 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-white transition duration-300 hover:bg-[#003050]"
-                >
-                  Enviar mensagem no WhatsApp
-                </a>
-                <div className="rounded-3xl bg-white/90 p-6 text-sm leading-7 text-[#001a33]/85 shadow-[0_20px_60px_rgba(0,26,51,0.06)]">
-                  <p className="font-semibold">Agende com confidencialidade.</p>
-                  <p>Nosso atendimento privado garante atenção exclusiva antes, durante e depois da sua experiência.</p>
-                </div>
+            <p className="text-sm uppercase tracking-[0.35em] text-[#82C7FF]">Diferenciais</p>
+            <h2 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">O que faz a A7Rio ser diferente.</h2>
+          </motion.div>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            {differentials.map((item) => (
+              <motion.div key={item.title} variants={sectionFade} className="rounded-4xl border border-white/10 bg-slate-950/80 p-8 text-left shadow-[0_30px_70px_rgba(0,17,51,0.18)]">
+                <h3 className="text-xl font-semibold text-white">{item.title}</h3>
+                <p className="mt-4 text-sm leading-7 text-slate-300">{item.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        <section className="bg-[#081120] py-20">
+          <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 md:px-10 lg:flex-row lg:items-center lg:justify-between">
+            <div className="space-y-6">
+              <p className="text-sm uppercase tracking-[0.35em] text-[#82C7FF]">Pronto para viver o Rio?</p>
+              <h2 className="max-w-2xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+                Bora viver o Rio de um jeito diferente?
+              </h2>
+              <p className="max-w-xl text-base leading-8 text-slate-300">
+                Fale com a gente no WhatsApp e monte sua experiência personalizada no mar.
+              </p>
+            </div>
+            <a
+              href="https://wa.me/5521999999999?text=Olá!%20Gostaria%20de%20montar%20uma%20experiência%20personalizada%20com%20a%20A7Rio."
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-full bg-[#147BFF] px-8 py-4 text-sm font-semibold text-white shadow-[0_20px_50px_rgba(20,123,255,0.22)] transition hover:bg-[#49A3FF]"
+            >
+              Falar no WhatsApp
+            </a>
+          </div>
+        </section>
+
+        <footer className="border-t border-white/10 bg-[#050816] py-12">
+          <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 md:px-10 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-center gap-3">
+              <img src="/assets/logo-azul.png" alt="A7Rio" className="h-10 w-auto mix-blend-screen" />
+              <div>
+                <p className="font-semibold text-white">A7Rio</p>
+                <p className="text-sm text-slate-400">Experiências exclusivas no mar do Rio.</p>
               </div>
             </div>
-          </motion.div>
-        </section>
+            <div className="grid gap-2 text-sm text-slate-400 sm:grid-cols-2 lg:grid-cols-5">
+              {['Experiências', 'Pacotes', 'Personalize', 'Sobre', 'Contato'].map((item) => (
+                <FooterLink key={item} label={item} />
+              ))}
+            </div>
+          </div>
+        </footer>
       </main>
-
-      <a
-        href="https://wa.me/5521999999999"
-        target="_blank"
-        rel="noreferrer"
-        className="fixed bottom-6 right-6 z-50 inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_20px_40px_rgba(37,211,102,0.28)] transition duration-300 hover:scale-105"
-      >
-        <motion.div
-          animate={{ scale: [1, 1.08, 1], opacity: [0.9, 1, 0.9] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-          className="flex h-full w-full items-center justify-center rounded-full bg-[#25D366]"
-        >
-          <MessageCircle className="h-7 w-7" />
-        </motion.div>
-      </a>
-
-      <footer className="border-t border-[#001a33]/10 bg-[#F5F5F0] py-10">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 text-sm text-[#001a33]/80 md:flex-row md:items-center md:justify-between md:px-10">
-          <span className="font-semibold uppercase tracking-[0.35em] text-[#001a33]">A7tour</span>
-          <div className="flex flex-wrap gap-4">
-            <a href="#contact" className="transition hover:text-[#001a33]">
-              Contato
-            </a>
-            <a href="#" className="transition hover:text-[#001a33]">
-              Política de privacidade
-            </a>
-            <a href="#" className="transition hover:text-[#001a33]">
-              Termos
-            </a>
-          </div>
-          <div className="flex items-center gap-4 text-[#001a33]/70">
-            <span className="inline-flex items-center gap-2">
-              <Heart className="h-4 w-4" />
-              Instagram
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <MapPin className="h-4 w-4" />
-              Rio de Janeiro
-            </span>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -13,16 +13,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "A7Tour — O Rio como sua cena de cinema",
+  title: "A7Rio — Experiências premium no mar do Rio",
   description:
-    "A7Tour cria roteiros de aventura no Rio, do jet ski às ilhas Tijucas e Gigoia, com captação profissional para uma experiência única.",
-  keywords: ["A7Tour", "Rio de Janeiro", "jet ski", "ilhas Tijucas", "ilha da Gigoia", "snorkel", "experiência de aventura"],
+    "A7Rio cria experiências exclusivas no mar do Rio, com roteiros personalizados, passeios de lancha e suporte completo para turistas e moradores.",
+  keywords: ["A7Rio", "Rio de Janeiro", "lancha", "jet ski", "ilhas Tijucas", "ilhas Gigoia", "experiência premium"],
   openGraph: {
-    title: "A7Tour — O Rio como sua cena de cinema",
+    title: "A7Rio — Experiências premium no mar do Rio",
     description:
-      "A7Tour cria roteiros de aventura no Rio, do jet ski às ilhas Tijucas e Gigoia, com captação profissional para uma experiência única.",
+      "A7Rio cria experiências exclusivas no mar do Rio, com roteiros personalizados, passeios de lancha e suporte completo para turistas e moradores.",
     images: ["/assets/tijucas.jpg"],
-    siteName: "A7Tour",
+    siteName: "A7Rio",
   },
 };
 
