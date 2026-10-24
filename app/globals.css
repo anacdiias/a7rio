@@ -37,3 +37,16 @@ body {
   background: rgba(20, 123, 255, 0.22);
   color: #ffffff;
 }
+
+/* Hero: foto aérea com movimento lento (sem vídeo, sem pessoas). */
+.hero-kenburns {
+  animation: hero-kenburns 24s ease-in-out infinite alternate;
+  transform-origin: 60% 45%;
+}
+@keyframes hero-kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.09); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-kenburns { animation: none; }
+}
