@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "instagram": {
+      "command": "npx",
+      "args": ["-y", "instagram-mcp-ai@0.8.0"],
+      "env": {
+        "IG_ENV_FILE": "C:/Users/SEU_USUARIO/.a7rio/instagram.env",
+        "IG_TOOL_PACKAGES": "reader",
+        "IG_WRITE_MODE": "preview",
+        "IG_ALLOW_DESTRUCTIVE": "false"
+      }
+    }
+  }
+}
