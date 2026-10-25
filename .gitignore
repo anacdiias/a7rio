@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# fotos com pessoas: so preview local ate haver autorizacao de imagem
+/public/assets/real/
