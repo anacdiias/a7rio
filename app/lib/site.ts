@@ -24,16 +24,16 @@ export const operators = {
 
 export type Img = { src: string; fallback: string; pos?: string };
 
-// `src` são fotos reais do acervo (public/assets/real, fora do git até haver autorização de imagem).
+// `src` são fotos reais do acervo (public/assets/real), com uso autorizado pela responsável.
 // `fallback` é paisagem já versionada, usada se a foto real não existir (ex.: preview publicado).
 export const img = {
   tijucas: { src: "/assets/tijucas.jpg", fallback: "/assets/hero-tijucas.jpg" },
-  jetCapa: { src: "/assets/real/jet-ski-capa.jpg", fallback: "/assets/catalogo/costa-arco.jpg", pos: "50% 55%" },
-  lancha: { src: "/assets/real/lancha-jet-capa.jpg", fallback: "/assets/catalogo/costa-mar.jpg", pos: "50% 70%" },
-  jet15: { src: "/assets/real/jet-ski-120.jpg", fallback: "/assets/catalogo/costa-barra.jpg", pos: "50% 60%" },
-  jet30: { src: "/assets/real/galeria-jet.jpg", fallback: "/assets/catalogo/costa-falesia.jpg", pos: "50% 70%" },
-  jet60: { src: "/assets/real/jet-ski-60.jpg", fallback: "/assets/catalogo/agua-turquesa.jpg", pos: "50% 60%" },
-  jet120: { src: "/assets/real/jet-ski-capa.jpg", fallback: "/assets/catalogo/ilhas-falesia.jpg", pos: "50% 55%" },
+  jetCapa: { src: "/assets/real/jet-ski-capa.jpg", fallback: "/assets/catalogo/costa-arco.jpg", pos: "50% 67%" },
+  lancha: { src: "/assets/real/lancha-jet-capa.jpg", fallback: "/assets/catalogo/costa-mar.jpg", pos: "50% 59%" },
+  jet15: { src: "/assets/real/jet-ski-120.jpg", fallback: "/assets/catalogo/costa-barra.jpg", pos: "50% 50%" },
+  jet30: { src: "/assets/real/galeria-jet.jpg", fallback: "/assets/catalogo/costa-falesia.jpg", pos: "50% 50%" },
+  jet60: { src: "/assets/real/jet-ski-60.jpg", fallback: "/assets/catalogo/agua-turquesa.jpg", pos: "50% 54%" },
+  jet120: { src: "/assets/real/jet-ski-capa.jpg", fallback: "/assets/catalogo/ilhas-falesia.jpg", pos: "50% 66%" },
   jet180: { src: "/assets/real/galeria-mar.jpg", fallback: "/assets/hero-tijucas.jpg" },
 } satisfies Record<string, Img>;
 
@@ -104,5 +104,5 @@ export const gallery: { name: string; image: Img; tag: string }[] = [
   { name: "Costões do Rio a mil por hora", image: img.jet60, tag: "JET SKI" },
   { name: "Mar azul, galera e diversão", image: img.jet180, tag: "EM GRUPO" },
   { name: "Aventura entre as pedras", image: img.jetCapa, tag: "ADRENALINA" },
-  { name: "Ilhas Tijucas", image: img.tijucas, tag: "ILHAS" },
+  { name: "Jet ski a toda no Rio", image: img.jet30, tag: "JET SKI" },
 ];

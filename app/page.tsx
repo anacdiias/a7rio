@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, ChevronDown, Menu, Waves, X } from "lucide-react";
-import { GENERIC_EXPERIENCE, INSTAGRAM_A7, gallery, img, jetDurations, operators, products } from "./lib/site";
+import { GENERIC_EXPERIENCE, INSTAGRAM_A7, gallery, jetDurations, operators, products } from "./lib/site";
 import { Cta, Photo } from "./lib/ui";
 
 const FAQs = [
@@ -50,13 +50,12 @@ export default function Home() {
         {/* HERO */}
         <section className="relative isolate flex min-h-[680px] items-center overflow-hidden md:min-h-[760px]">
           <div className="absolute inset-0 -z-10">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/hero-tijucas.jpg" alt="" aria-hidden="true" fetchPriority="high" className="hero-kenburns h-full w-full object-cover" />
+            <video src="/assets/hero-video-opt.mp4" poster="/assets/hero-tijucas.jpg" autoPlay muted loop playsInline preload="auto" aria-hidden="true" className="h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-r from-[#03101a]/95 via-[#03101a]/70 to-[#03101a]/20" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#07111f] via-transparent to-transparent" />
           </div>
-          <div className="mx-auto grid w-full max-w-[1280px] items-center gap-10 px-5 py-20 md:px-8 lg:grid-cols-[1.1fr_.9fr]">
-            <div className="space-y-8">
+          <div className="mx-auto w-full max-w-[1280px] px-5 py-20 md:px-8">
+            <div className="max-w-[680px] space-y-8">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-xs font-semibold tracking-[.18em] text-[#b9e4ff] backdrop-blur">RIO DE JANEIRO · PELO MAR</span>
               <h1 className="text-[clamp(44px,6.4vw,84px)] font-extrabold leading-[1.02] tracking-[-.05em]">
                 O Rio que você conhece.<br /><span className="text-[#7dcdff]">E o que falta viver.</span>
@@ -71,10 +70,6 @@ export default function Home() {
                 <div className="h-10 w-px bg-white/20" />
                 <p className="text-xs leading-5 text-[#dce9f4]">Jet ski a partir de <strong className="text-base text-white">R$ 300</strong><br />Lancha + Jet Ski <strong className="text-base text-white">R$ 3.500</strong></p>
               </div>
-            </div>
-            <div className="relative hidden lg:block">
-              <Photo image={img.lancha} alt="Lancha e jet ski no mar do Rio de Janeiro" className="aspect-[4/5] w-full rounded-[32px] border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,.45)]" />
-              <div className="absolute -bottom-5 -left-5 rounded-2xl bg-white px-5 py-4 text-[#0a2035] shadow-xl"><p className="text-[11px] font-bold tracking-wide">LANCHA + JET SKI</p><p className="text-2xl font-extrabold">R$ 3.500</p><p className="text-[11px]">até 7 pessoas · 4h</p></div>
             </div>
           </div>
         </section>
