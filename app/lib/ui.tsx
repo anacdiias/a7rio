@@ -1,16 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { type Img, whatsappUrl } from "./site";
 
 // Tenta a foto real; se não existir, cai para a paisagem versionada.
 export function Photo({ image, alt, className = "" }: { image: Img; alt: string; className?: string }) {
   const [src, setSrc] = useState(image.src);
+  const ref = useRef<HTMLImageElement>(null);
+  // Se a foto falhou antes da hidratação, o onError já passou: confere ao montar.
+  useEffect(() => {
+    const el = ref.current;
+    if (el?.complete && el.naturalWidth === 0) setSrc(image.fallback);
+  }, [image.fallback]);
   return (
     <div className={`relative overflow-hidden bg-[#0a2438] ${className}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
+        ref={ref}
         src={src}
         alt={alt}
         loading="lazy"
